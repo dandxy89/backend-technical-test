@@ -8,6 +8,10 @@ import org.http4s.server.blaze.BlazeBuilder
 
 import scala.concurrent.ExecutionContext
 
+/**
+ * 3. REST API
+ * Task: Define a simple REST API to offer the functionality of the SimpleAsyncTokenService implemented in the previous block.
+ */
 object BackendService {
 
   def apply(): HttpService[IO] = StatusRoute()
@@ -21,5 +25,4 @@ object BackendService {
       .withExecutionContext(ec)
       .enableHttp2(false)
       .serve
-
 }

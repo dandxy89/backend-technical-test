@@ -23,6 +23,10 @@ trait AsyncTokenService[F[_]] {
     ).value
 }
 
+/**
+ * 2. Service Implementation
+ * Provide an implementation for the following API, which is different from the one designed in the previous section:
+ */
 class IOAsyncTokenService(checkUsersCredential: Credential => Either[DomainError, User],
                           generateToken: (User, DateTime) => Either[DomainError, UserToken])(implicit t: Timer[IO])
     extends AsyncTokenService[IO] {
