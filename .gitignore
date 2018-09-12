@@ -1,0 +1,10 @@
+*.class
+*.log
+
+dist/*
+target/
+lib_managed/
+src_managed/
+.cache
+.lib/
+.idea/
