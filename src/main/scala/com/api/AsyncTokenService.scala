@@ -10,9 +10,9 @@ import scala.concurrent.duration._
 import scala.language.higherKinds
 
 trait AsyncTokenService[F[_]] {
-  def authenticate(credentials: Credential): F[Either[DomainError, User]]
+  protected def authenticate(credentials: Credential): F[Either[DomainError, User]]
 
-  def issueToken(user: User): F[Either[DomainError, UserToken]]
+  protected def issueToken(user: User): F[Either[DomainError, UserToken]]
 
   def requestToken(credentials: Credential)(implicit F: Monad[F]): F[Either[DomainError, UserToken]] =
     (
@@ -29,12 +29,12 @@ class IOAsyncTokenService(checkUsersCredential: Credential => Either[DomainError
 
   private val intGenerator = scala.util.Random
 
-  override def authenticate(credentials: Credential): IO[Either[DomainError, User]] =
+  override protected def authenticate(credentials: Credential): IO[Either[DomainError, User]] =
     IO.sleep(intGenerator.nextInt(5000).millisecond).flatMap { _ =>
       IO.pure(checkUsersCredential(credentials))
     }
 
-  override def issueToken(user: User): IO[Either[DomainError, UserToken]] =
+  override protected def issueToken(user: User): IO[Either[DomainError, UserToken]] =
     IO.sleep(intGenerator.nextInt(5000).millisecond).flatMap { _ =>
       IO.pure(generateToken(user, new DateTime(DateTimeZone.UTC)))
     }
