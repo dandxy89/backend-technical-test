@@ -11,7 +11,7 @@ object TokenGenerator {
 
   def generateToken: (User, DateTime) => Either[DomainError, UserToken] =
     (user, dt) =>
-      Either.cond(user.userId.value.startsWith("A"),
+      Either.cond(!user.userId.value.startsWith("A"),
                   UserToken(s"${user.userId.value}_${dt.toString(datetimeFormat)}"),
                   InvalidGrant)
 }
