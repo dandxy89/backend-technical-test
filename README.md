@@ -35,3 +35,10 @@ Running the tests
 Running the Integrations Tests
 
     sbt it:test 
+
+#### Load Testing Locally
+
+Concurrency = 100
+Number of Requests = 500
+
+    ab -T 'application/json'  -n 500 -c 100 -p POST.data http://localhost:8080/auth
