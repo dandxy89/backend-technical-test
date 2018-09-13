@@ -1,4 +1,4 @@
-# Addison Global Backend Technical Assesement
+# Addison Global Backend Technical Assessment
 
 ## Introduction
 
