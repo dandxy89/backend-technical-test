@@ -2,27 +2,34 @@ package com.routes
 
 import cats.data.EitherT
 import cats.effect.IO
-import com.domain.DomainError.InvalidRequest
-import com.domain.{Credential, DomainError, UserToken}
+import com.domain.ServiceError.{InvalidGrant, InvalidRequest}
+import com.domain.{Credential, ServiceError, UserToken}
 import org.http4s.circe.{jsonEncoderOf, jsonOf}
 import org.http4s.dsl.io._
-import org.http4s.{EntityDecoder, EntityEncoder, HttpService}
+import org.http4s.{EntityDecoder, EntityEncoder, HttpService, Response, Status}
 
 object AuthRoute {
 
-  implicit val entityDecoder: EntityDecoder[IO, Credential]  = jsonOf[IO, Credential]
-  implicit val entityEncoder: EntityEncoder[IO, DomainError] = jsonEncoderOf[IO, DomainError]
+  private implicit val entityDecoder: EntityDecoder[IO, Credential]  = jsonOf[IO, Credential]
+  private implicit val entityEncoder: EntityEncoder[IO, ServiceError] = jsonEncoderOf[IO, ServiceError]
 
-  def apply(requestToken: Credential => IO[Either[DomainError, UserToken]]): HttpService[IO] = HttpService[IO] {
+  private def toResponse(res: IO[Either[ServiceError, UserToken]]): IO[Response[IO]] = res.flatMap {
+    case Right(token) => Ok(token.token)
+    case Left(e) =>
+      e match {
+        case InvalidRequest => BadRequest(e)
+        case InvalidGrant   => IO.pure[Response[IO]](Response[IO](status = Status.Unauthorized))
+        case _              => InternalServerError()
+      }
+  }
+
+  def apply(requestToken: Credential => IO[Either[ServiceError, UserToken]]): HttpService[IO] = HttpService[IO] {
     case req @ POST -> Root / "auth" =>
       val res = for {
         parsedBody <- EitherT(req.attemptAs[Credential].value).leftMap(_ => InvalidRequest)
         token      <- EitherT(requestToken(parsedBody))
       } yield token
 
-      res.value.flatMap {
-        case Right(token) => Ok(token.token)
-        case Left(e)      => BadRequest(e)
-      }
+      toResponse(res.value)
   }
 }

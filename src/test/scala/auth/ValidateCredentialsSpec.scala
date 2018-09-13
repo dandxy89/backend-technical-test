@@ -1,7 +1,7 @@
 package auth
 
 import com.auth.ValidateCredentials.checkUsersCredential
-import com.domain.DomainError.InvalidGrant
+import com.domain.ServiceError.InvalidGrant
 import com.domain.{ Credential, Password, User, UserName }
 import org.scalatest.{ FlatSpec, Matchers }
 

@@ -1,7 +1,7 @@
 package auth
 
 import com.auth.TokenGenerator.generateToken
-import com.domain.DomainError.InvalidGrant
+import com.domain.ServiceError.InvalidGrant
 import com.domain.{ User, UserName, UserToken }
 import org.joda.time.format.{ DateTimeFormat, DateTimeFormatter }
 import org.joda.time.{ DateTime, DateTimeZone }
@@ -12,7 +12,7 @@ class TokenGeneratorSpec extends FlatSpec with Matchers {
   behavior of "Token Generator"
 
   val testDateTime: DateTime            = DateTime.now(DateTimeZone.UTC)
-  val datetimeFormat: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+  val datetimeFormat: DateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
   val validUser                         = User(UserName("dan"))
   val invalidUser                       = User(UserName("Afailure"))
 

@@ -9,6 +9,7 @@ import com.routes.{ AuthRoute, StatusRoute }
 import fs2.{ Stream, StreamApp }
 import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
+import org.http4s.server.middleware.{ CORS, CORSConfig }
 
 import scala.concurrent.ExecutionContext
 
@@ -18,12 +19,15 @@ import scala.concurrent.ExecutionContext
  */
 object BackendService {
 
+  private val corsConfig: CORSConfig = CORS.DefaultCORSConfig
+    .copy(allowCredentials = false, allowedHeaders = Some(Set("Content-Type", "authorization")))
+
   def apply()(implicit t: Timer[IO]): HttpService[IO] = {
 
     val tokenHandler = new IOAsyncTokenService(checkUsersCredential, generateToken)
 
     StatusRoute() <+>
-      AuthRoute(tokenHandler.requestToken)
+      CORS(AuthRoute(tokenHandler.requestToken), corsConfig)
   }
 
   def serve(service: HttpService[IO], host: String, port: Int)(implicit ec: ExecutionContext): Stream[IO, StreamApp.ExitCode] =
