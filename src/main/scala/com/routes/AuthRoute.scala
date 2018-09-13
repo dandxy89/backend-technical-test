@@ -14,7 +14,7 @@ object AuthRoute {
   implicit val entityEncoder: EntityEncoder[IO, DomainError] = jsonEncoderOf[IO, DomainError]
 
   def apply(requestToken: Credential => IO[Either[DomainError, UserToken]]): HttpService[IO] = HttpService[IO] {
-    case req @ POST -> Root / "auth" => {
+    case req @ POST -> Root / "auth" =>
       val res = for {
         parsedBody <- EitherT(req.attemptAs[Credential].value).leftMap(_ => InvalidRequest)
         token      <- EitherT(requestToken(parsedBody))
@@ -24,6 +24,5 @@ object AuthRoute {
         case Right(token) => Ok(token.token)
         case Left(e)      => BadRequest(e)
       }
-    }
   }
 }

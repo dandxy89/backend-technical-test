@@ -1,11 +1,11 @@
 package api
 
-import cats.effect.IO
+import cats.effect.{IO, Timer}
 import com.api.IOAsyncTokenService
 import com.domain.DomainError.InvalidGrant
 import com.domain._
 import org.joda.time.DateTime
-import org.scalatest.{ FlatSpec, Matchers }
+import org.scalatest.{FlatSpec, Matchers}
 
 import scala.concurrent.ExecutionContext
 
@@ -13,7 +13,7 @@ class AsyncTokenServiceSpec extends FlatSpec with Matchers {
 
   behavior of "IO Sync Token Service"
 
-  implicit val t = IO.timer(ExecutionContext.global)
+  implicit val t: Timer[IO] = IO.timer(ExecutionContext.global)
 
   val validCredentials: Credential => Either[DomainError, User]   = _ => Right(User(UserName("Dan")))
   val invalidCredentials: Credential => Either[DomainError, User] = _ => Left(InvalidGrant)
