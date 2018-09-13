@@ -7,7 +7,7 @@ import org.joda.time.format.DateTimeFormat
 
 object TokenGenerator {
 
-  private val datetimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ")
+  private val datetimeFormat = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
 
   def generateToken: (User, DateTime) => Either[DomainError, UserToken] =
     (user, dt) =>

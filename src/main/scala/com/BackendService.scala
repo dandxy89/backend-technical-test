@@ -1,9 +1,13 @@
 package com
 
-import cats.effect.IO
-import com.routes.StatusRoute
-import org.http4s.HttpService
+import cats.effect.{ IO, Timer }
+import cats.implicits._
+import com.api.IOAsyncTokenService
+import com.auth.TokenGenerator.generateToken
+import com.auth.ValidateCredentials.checkUsersCredential
+import com.routes.{ AuthRoute, StatusRoute }
 import fs2.{ Stream, StreamApp }
+import org.http4s.HttpService
 import org.http4s.server.blaze.BlazeBuilder
 
 import scala.concurrent.ExecutionContext
@@ -14,7 +18,13 @@ import scala.concurrent.ExecutionContext
  */
 object BackendService {
 
-  def apply(): HttpService[IO] = StatusRoute()
+  def apply()(implicit t: Timer[IO]): HttpService[IO] = {
+
+    val tokenHandler = new IOAsyncTokenService(checkUsersCredential, generateToken)
+
+    StatusRoute() <+>
+      AuthRoute(tokenHandler.requestToken)
+  }
 
   def serve(service: HttpService[IO], host: String, port: Int)(implicit ec: ExecutionContext): Stream[IO, StreamApp.ExitCode] =
     BlazeBuilder[IO]
