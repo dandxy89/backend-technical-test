@@ -1,6 +1,7 @@
 package com.api
 
 import cats.Monad
+import cats.implicits._
 import cats.data.EitherT
 import cats.effect.{ IO, Timer }
 import com.domain.{ Credential, ServiceError, User, UserToken }
@@ -34,12 +35,8 @@ class IOAsyncTokenService(checkUsersCredential: Credential => Either[ServiceErro
   private val intGenerator = scala.util.Random
 
   override protected def authenticate(credentials: Credential): IO[Either[ServiceError, User]] =
-    IO.sleep(intGenerator.nextInt(5000).millisecond).flatMap { _ =>
-      IO.pure(checkUsersCredential(credentials))
-    }
+    IO.sleep(intGenerator.nextInt(5000).millisecond) *> IO.pure(checkUsersCredential(credentials))
 
   override protected def issueToken(user: User): IO[Either[ServiceError, UserToken]] =
-    IO.sleep(intGenerator.nextInt(5000).millisecond).flatMap { _ =>
-      IO.pure(generateToken(user, new DateTime(DateTimeZone.UTC)))
-    }
+    IO.sleep(intGenerator.nextInt(5000).millisecond) *> IO.pure(generateToken(user, new DateTime(DateTimeZone.UTC)))
 }

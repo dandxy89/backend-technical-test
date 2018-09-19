@@ -28,11 +28,17 @@ Running the service
 
     sbt run
     
-Running the tests
+##### Running the tests
 
     sbt test
     
-Running the Integrations Tests
+##### Running the Integrations Tests
+
+Start an instance
+
+    sbt run
+    
+Run the tests against the running service    
 
     sbt it:test 
 
