@@ -1,4 +1,4 @@
-val http4sVersion  = "0.18.17"
+val http4sVersion  = "0.18.18"
 val circeVersion   = "0.9.3"
 val scalatest      = "3.0.5"
 val jodaTime       = "2.10"
@@ -9,6 +9,8 @@ ThisBuild / organization := "com.example"
 ThisBuild / scalaVersion := "2.12.6"
 ThisBuild / name := "technical-test"
 ThisBuild / version := Version()
+
+addCommandAlias("fmt", "all scalafmtSbt scalafmt test:scalafmt")
 
 def itFilter(name: String): Boolean = name endsWith "ITest"
 

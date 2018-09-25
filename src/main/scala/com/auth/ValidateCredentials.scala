@@ -1,7 +1,7 @@
 package com.auth
 
 import com.domain.ServiceError.InvalidGrant
-import com.domain.{Credential, ServiceError, User}
+import com.domain.{ Credential, ServiceError, User }
 
 object ValidateCredentials {
 

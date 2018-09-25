@@ -1,11 +1,11 @@
 package api
 
-import cats.effect.{IO, Timer}
+import cats.effect.{ IO, Timer }
 import com.api.IOAsyncTokenService
 import com.domain.ServiceError.InvalidGrant
 import com.domain._
 import org.joda.time.DateTime
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{ FlatSpec, Matchers }
 
 import scala.concurrent.ExecutionContext
 
