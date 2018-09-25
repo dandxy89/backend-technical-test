@@ -40,7 +40,11 @@ Start an instance
     
 Run the tests against the running service    
 
-    sbt it:test 
+    sbt it:test
+    
+##### Formatting the project
+
+    sbt fmt
 
 #### Load Testing Locally
 
